@@ -1,0 +1,22 @@
+
+@import "./normalize.scss";
+
+body { background-color: red;}
+
+
+//公共样式自定义
+.pull-right{float: right;}
+.padding-top-25{padding-top: 25px;}
+.w-100{width: 120px;}
+
+//字体大小
+.fs-12{font-size: 12px;}
+
+//文字居中
+.text-center{
+    text-align: center;
+}
+//文字颜色
+.color-white{
+    color: #fff;
+}
