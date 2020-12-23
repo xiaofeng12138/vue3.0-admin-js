@@ -1,0 +1,19 @@
+<template>
+    <div>
+         这是一个头部文件
+    </div>
+</template>
+
+<script>
+
+import {reactive, onMounted,toRefs,ref} from 'vue'
+export default {
+setup(props) {
+onMounted(() => {})
+return {}
+}
+}
+</script>
+<style lang='scss' scoped>
+
+</style>
