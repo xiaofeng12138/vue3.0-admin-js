@@ -1,5 +1,5 @@
 <template>
     <div>
-        这是一个首页
+        产品管理页面
     </div>
 </template>

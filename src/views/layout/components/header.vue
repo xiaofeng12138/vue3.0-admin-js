@@ -1,8 +1,11 @@
 <template>
     <div class="header">
-    
-         <a-dropdown>
-               <img src="@/assets/face.jpg" alt="">
+        <div class="meun">
+            <svg-icon iconName ='menu' className ='aside-width-30'/>
+        </div>
+        <div class="header_muen">
+            <a-dropdown>
+            <img src="@/assets/face.jpg" alt="">
             <template #overlay>
             <a-menu>
                 <a-menu-item key="0">
@@ -25,6 +28,7 @@
             </a-menu>
             </template>
         </a-dropdown>
+        </div>
     </div>
 </template>
 
@@ -61,14 +65,22 @@ export default {
 </script>
 <style lang='scss' scoped>
 .header{
-    float: right;
-    padding-top: 10px;
-    padding-right: 30px;
-    img{
-        width: 40px;
-        height: 40px;
+    .meun{
+        float: left;
         cursor: pointer;
+        margin-left: 20px;
     }
+    .header_muen{
+        float: right;
+        padding-top: 10px;
+        padding-right: 30px;
+        img{
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+    }
+    
     
 }
 .wrap{

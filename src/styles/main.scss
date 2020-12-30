@@ -1,5 +1,6 @@
 
 @import "./normalize.scss";
+@import "./icon.scss";
 
 
 
@@ -19,4 +20,10 @@
 //文字颜色
 .color-white{
     color: #fff;
+}
+.color-ccc{
+    color: #ccc;
+}
+.ant-layout-sider .ant-layout-sider-dark{
+   min-width: 0 !important;
 }

@@ -1,6 +1,6 @@
 <template>
     <div>
-         这是一个内容趋于文件
+        <router-view />
     </div>
 </template>
 

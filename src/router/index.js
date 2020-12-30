@@ -35,7 +35,8 @@ const routes = [
     component: ()=>import('@/views/layout/index'),
     // hidden:true,
     meta:{
-      title:'首页'
+      title:'首页',
+      icon:'home'
     }
   },
   {
@@ -43,7 +44,8 @@ const routes = [
     name: "AdminIndex",
     component: ()=>import('@/views/layout/index'),
     meta:{
-      title:'管理系统'
+      title:'管理总台',
+      icon:'console'
     },
     children:[
       {
@@ -51,10 +53,40 @@ const routes = [
         name: "Role",
         component: ()=>import('@/views/admin/role.vue'),
         meta:{
-          title:'角色管理'
+          title:'角色管理',
+          icon:'role'
+        },
+      },
+      {
+        path: "/role3",
+        name: "Role3",
+        component: ()=>import('@/views/admin/role.vue'),
+        meta:{
+          title:'用户管理',
+          icon:'user'
         },
       }
     ]
+  },
+  {
+    path: "/news",
+    name: "New",
+    component: ()=>import('@/views/layout/index'),
+    // hidden:true,
+    meta:{
+      title:'信息管理',
+      icon:'informtion'
+    }
+  },
+  {
+    path: "/product",
+    name: " Product",
+    component: ()=>import('@/views/layout/index'),
+    // hidden:true,
+    meta:{
+      title:'产品管理',
+      icon:'product'
+    }
   },
   
 ];
