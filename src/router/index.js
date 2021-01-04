@@ -33,11 +33,21 @@ const routes = [
     path: "/index",
     name: "Index",
     component: ()=>import('@/views/layout/index'),
-    // hidden:true,
     meta:{
       title:'首页',
       icon:'home'
-    }
+    },
+    children:[
+      {
+        path: "/home",
+        name: "Home",
+        component: ()=>import('@/views/home/index'),
+        meta:{
+          title:'首页',
+          icon:'home'
+        },
+      }
+    ]
   },
   {
     path: "/adminIndex",
@@ -76,7 +86,17 @@ const routes = [
     meta:{
       title:'信息管理',
       icon:'informtion'
-    }
+    },
+    children:[
+      {
+        path: "/newsList",
+        name: "NesList",
+        component: ()=>import('@/views/info/index'),
+        meta:{
+          title:'信息管理',
+        },
+      }
+    ]
   },
   {
     path: "/product",
@@ -86,7 +106,17 @@ const routes = [
     meta:{
       title:'产品管理',
       icon:'product'
-    }
+    },
+    children:[
+      {
+        path: "/productList",
+        name: "ProductList",
+        component: ()=>import('@/views/product/index'),
+        meta:{
+          title:'产品管理',
+        },
+      }
+    ]
   },
   
 ];

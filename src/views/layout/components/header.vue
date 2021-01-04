@@ -1,6 +1,6 @@
 <template>
     <div class="header">
-        <div class="meun">
+        <div class="meun"  @click="toggleMenu">
             <svg-icon iconName ='menu' className ='aside-width-30'/>
         </div>
         <div class="header_muen">
@@ -35,11 +35,12 @@
 <script>
 //引入语言
 import {useI18n} from 'vue-i18n'
-import {reactive, onMounted,toRefs,ref, toRef} from 'vue'
+import {reactive, onMounted,toRefs,ref, toRef,getCurrentInstance} from 'vue'
 export default {
     name:'Header',
     setup(props) {
         const {locale} = useI18n({useScope:'global'})
+        const {emit} = getCurrentInstance()
         const data = reactive({
             langType:[
                 {value:'ch',label:'中文'},
@@ -56,9 +57,15 @@ export default {
         }
         onMounted(() => {})
 
+        //点击伸缩按钮
+      const toggleMenu = ()=>{
+        console.log(33)
+          emit('xf',{a:1})
+      }
+
 
         return {
-            ...headerData,toggle
+            ...headerData,toggle,toggleMenu
         }
     }
 }

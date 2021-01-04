@@ -7,12 +7,12 @@
             collapsible
             width= "255"
         >
-         <Aside />
+        <Aside :collapsedFlag = "collapsed" />
         </a-layout-sider>
         <a-layout>
         <a-layout-header style="background: #fff; padding: 0">
             
-         <Header />
+         <Header @xf = 'handerClick'  />
         </a-layout-header>
         <a-layout-content
             :style="{ margin: '24px 16px', padding: '24px', background: '#fff', minHeight: '280px' }"
@@ -30,16 +30,22 @@ import {reactive, onMounted,toRefs,ref} from 'vue'
 import Aside from './components/aside';
 import Header from './components/header';
 import Content from './components/content'
+import { json } from 'body-parser';
 export default {
     components:{Aside,Header,Content},
     setup(props) {
         const data = reactive({
-           collapsed:true 
+           collapsed:JSON.parse(localStorage.getItem('menuFlag'))
         })
         const layoutData = toRefs(data)
         onMounted(() => {})
+        const handerClick =(e)=>{
+            const bool = !data.collapsed
+            data.collapsed = bool
+            localStorage.setItem('menuFlag', bool)
+        }
         return {
-            ...layoutData
+            ...layoutData,handerClick
         }
      }
     }

@@ -1,7 +1,8 @@
 <template>
     <div >
       <h1 id="logo">
-        <img :src ="logoUrl" alt="">
+        <img v-if="collapsedFlag" :src ="logoUrl_min" alt=""> 
+        <img v-else :src ="logoUrl" alt=""> 
       </h1>
           <!-- <div class="logo" /> -->
           <a-menu 
@@ -16,13 +17,13 @@
                <template v-for="(item,index) in routerArray">
                     <template v-if="!item.hidden">
                       <!-- 一级菜单显示 -->
-                      <a-menu-item v-if="!item.children" :key="item.path" >
+                      <a-menu-item v-if="hasOnlyChildren(item)" :key="item.path" >
 
-                        <router-link class='color-white'  :to="item.path">
+                        <router-link class='color-white'  :to="item.children[0].path">
                           <span class="anticon">
                             <svg-icon :iconName ='item.meta.icon' className ='aside-width-25'/>
                           </span>
-                          <span>{{item.meta && item.meta.title}}</span>
+                          <span>{{item.children[0].meta && item.children[0].meta.title}}</span>
                           <!-- <i class="icon  w-21 mb--5" :class="item.meta && item.meta.icon"></i> -->
                           
                         </router-link>
@@ -46,13 +47,19 @@ import Meun from './menu'
 export default {
     name:'Aside',
     components:{Meun},
+    props:{
+      collapsedFlag:{
+        type:Boolean,
+        default:false
+      }
+    },
     setup(props) {
+      
       const {options} = useRouter()
-
       const routerArray = options.routes
       const data = reactive({
           logoUrl:require('@/assets/images/logo.png'),
-          collapsed: true,
+          logoUrl_min:require('@/assets/images/logo_min.png'),
           selectedKeys: localStorage.getItem('selectedKeys') ? [localStorage.getItem('selectedKeys')] : [],
           openKeys: localStorage.getItem('openkey') ? [localStorage.getItem('openkey')] : [],
       })
@@ -73,10 +80,20 @@ export default {
         localStorage.setItem('openkey',openKeys)
       }
 
+      //只有一个子集处理函数
+      const hasOnlyChildren =(data)=>{
+        if(data.hidden) return false;
+        const routers = data.children.filter( item => item.hidden ? false:true)
+        if(routers.length == 1) return true
+        return false
+      }
+
+      
+
       return {
            ...AsideData,
            routerArray,
-           openMenu,selectMenu
+           openMenu,selectMenu,hasOnlyChildren
         }
     }
 }
