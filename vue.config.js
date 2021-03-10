@@ -1,6 +1,6 @@
 const path = require('path');
 module.exports = {
-   publicPath:process.env.NODE_ENV = 'production' ? '':'/',
+   publicPath:process.env.NODE_ENV = 'production' ? '':'./',
    outputDir:process.env.NODE_ENV = 'production' ? 'dist':'Devdist',
    //关闭自动检测
    lintOnSave:false,
@@ -25,6 +25,22 @@ module.exports = {
     loaderOptions: {
       scss: { 
         prependData: `@import "./src/styles/main.scss";`
+      }
+    }
+  },
+
+  devServer:{
+    open:false,
+    host:"0.0.0.0",
+    port:8080,
+    proxy:{
+      [process.env.VUE_APP_FLAG]:{
+        target:"http://www.web-jshtml.cn/api/vue3",
+        ws:false,
+        changeOrigin:true,
+        pathRewrite:{
+          [`^${process.env.VUE_APP_FLAG}`]:""
+        }
       }
     }
   },
