@@ -1,12 +1,10 @@
 import axios from 'axios'
 import { message } from 'ant-design-vue';
 const service = axios.create({
-    baseURL:'/api',
+    //baseURL:'/api',
+    baseURL:'',
     timeout:500000,
 })
-
-console.log(process.env.VUE_APP_FLAG)
-
 
 //请求拦截
 service.interceptors.request.use(function(config){
@@ -19,14 +17,13 @@ service.interceptors.request.use(function(config){
 //响应拦截
 service.interceptors.response.use(function(response){
     const data = response.data
-    if(data.resCode === 0){
+    if(data.error_code === 0){
         return Promise.resolve(data)
     }else{
         message.error(data.message)
         return Promise.reject(data)
     }
-   return response
-},(error)=>{
+},function(error){
     return Promise.reject(error)
 })
 

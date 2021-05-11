@@ -6,8 +6,8 @@ export function validate_Phone(value){
     return regPhone.test(value);
 }
 
-// 正则校验密码
+// 正则校验密码  6-20位数字加字母
 export function validate_Password(value){
-    let regPassword = /^(?!\D+$)(?![^a-zA-Z]+$)\S{6,20}$/;
+    let regPassword = /^(?!\D+$)(?![^a-zA-Z]+$)\S{6,20}$/;   
     return regPassword.test(value);
 }

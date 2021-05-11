@@ -10,6 +10,8 @@ import Svgicon from './components/svgicon/index.vue' //引入全局组件
 
 import i18n from './language/index'
 
+//引入导航守卫
+import './router/permit'
 //V3 全局注入
 
 

@@ -17,11 +17,10 @@ export default {
        }
     },
 setup(props) {
-    console.log(props)
    const codeConfig  = reactive({
         button_text:"获取验证码",
         button_loading:false,
-        button_disabled:false,
+        button_disabled:true,
         sec:5,
         timer:null
    })

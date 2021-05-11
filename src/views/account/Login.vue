@@ -18,16 +18,13 @@
             <a-input type="password" v-model:value="RegisterForm.password"  />
           </a-form-item>
           <a-form-item>
-            <Captcha />
+            <!-- <Captcha /> -->
             
             <!--No-Captcha渲染的位置，其中 class 中必须包含 nc-container-->
           </a-form-item>
           <a-form-item>
-            <a-button type="primary" html-type="submit" block>
+            <a-button type="primary" html-type="submit" block style="margin-bottom:40px">
               登录
-            </a-button>
-             <a-button type="primary"  block  @click="Test">
-              测试按钮
             </a-button>
           </a-form-item>
            <a-form-item>
@@ -45,8 +42,14 @@
 <script>
 import {reactive, onMounted,toRefs,ref,getCurrentInstance} from 'vue'
 import Captcha from '@/components/captcha/index'
-import {GetCode} from '@/api/account.js'
+import {Login} from '@/api/account.js'
 import {validate_Phone,validate_Password} from '@/utils/reg.js'
+import { message } from 'ant-design-vue';
+//引入md5加密
+import md5 from 'js-md5';
+
+//引入Cookie
+import {SetToken,SetUsername} from '@/utils/cookie'
 export default {
   name: "Login",
   components:{Captcha},
@@ -70,14 +73,10 @@ export default {
       if (!value) {
         return Promise.reject('请输入密码');
       }else if (!validate_Password(value)) {
-        return Promise.reject('请输入11位手机号');
-      } else if(value && psds){
-        if(value !== psds){
-          return Promise.reject('两次输入密码不一致');
-        }else{
+        return Promise.reject('请输入6-20位密码');
+      }else{
           return Promise.resolve();
         }
-      }
     };
 
     // ref 定义基础数据类型
@@ -104,20 +103,29 @@ export default {
    
     //表单提交函数
     const handleSubmit =(values)=>{
-      console.log(values)
+       let requestData={
+           username:FormConfig.RegisterForm.username,
+           password:md5(FormConfig.RegisterForm.password),
+       }
+       
+        Login(requestData).then((res)=>{
+          if(res.error_code === 0){
+            message.success('登陆成功')
+            SetToken({token:res.content.token})
+            SetUsername({username:res.content.username})
+          }else{
+            message.error(res.msg)
+            // replace({
+            //   name:'Login'
+            // })
+          }
+        })
     }
 
-    //测试
-    const Test = ()=>{
-      GetCode().then(res=>{
-        console.log(res)
-      })
-    }
      return {
        FormConfig,
        ...data,
        handleSubmit,
-       Test
      }
   }
 };
