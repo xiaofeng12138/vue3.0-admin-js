@@ -19,7 +19,7 @@
                                         <svg-icon :iconName ='item.meta.icon' className ='aside-width-30'/>
                                     </span>
                                     <!-- <i class="icon  w-21 mb--5" :class="menu.meta && menu.meta.icon"></i> -->
-                                     <span>{{menu.meta && menu.meta.title}}</span>
+                                     <span>{{item.meta && item.meta.title}}</span>
                                 </router-link>
                         </a-menu-item>
 

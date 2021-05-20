@@ -63,7 +63,7 @@ export default {
   components:{Code},
   setup(props) {
    //自定义校验规则
-    let checkUsername = async (rule, value, callback) => {
+    let checkUsername =  (rule, value, callback) => {
       if (!value) {
         return Promise.reject('请输入用户名');
       }else if (!validate_Phone(value)) {

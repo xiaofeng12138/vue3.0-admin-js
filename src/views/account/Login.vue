@@ -47,6 +47,8 @@ import {validate_Phone,validate_Password} from '@/utils/reg.js'
 import { message } from 'ant-design-vue';
 //引入md5加密
 import md5 from 'js-md5';
+//Router
+import {useRouter} from 'vue-router'
 
 //引入Cookie
 import {SetToken,SetUsername} from '@/utils/cookie'
@@ -57,6 +59,8 @@ export default {
 
     //ctx 相当于vue2.0 中的this
     const {ctx } = getCurrentInstance()
+    
+    const { push } = useRouter()
     //自定义校验规则
     let checkUsername = async (rule, value, callback) => {
       if (!value) {
@@ -113,11 +117,11 @@ export default {
             message.success('登陆成功')
             SetToken({token:res.content.token})
             SetUsername({username:res.content.username})
+              push({
+              name:'Index'
+            })
           }else{
             message.error(res.msg)
-            // replace({
-            //   name:'Login'
-            // })
           }
         })
     }

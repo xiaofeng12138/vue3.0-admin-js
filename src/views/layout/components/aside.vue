@@ -27,9 +27,7 @@
                           <!-- <i class="icon  w-21 mb--5" :class="item.meta && item.meta.icon"></i> -->
                           
                         </router-link>
-                        
                         </a-menu-item>
-
                       <!-- 二级菜单 -->
                       <Meun v-else :menu ='item'  :key="item.path" />
                     </template>

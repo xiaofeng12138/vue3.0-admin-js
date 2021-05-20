@@ -2,7 +2,6 @@ import Router from './index'
 import {GetToken} from '@/utils/cookie.js'
 
 Router.beforeEach((to,form,next) => {
-  console.log(GetToken())
    if(GetToken()){
      next()
    }else{

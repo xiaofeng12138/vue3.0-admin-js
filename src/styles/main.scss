@@ -1,6 +1,7 @@
 
 @import "./normalize.scss";
 @import "./icon.scss";
+@import "./antd.scss";
 
 
 
@@ -27,3 +28,8 @@
 .ant-layout-sider .ant-layout-sider-dark{
    min-width: 0 !important;
 }
+
+.ml-10{margin-left: 10px;}
+.ml-20{margin-left: 20px;}
+
+.mb-20{margin-bottom: 20px;}

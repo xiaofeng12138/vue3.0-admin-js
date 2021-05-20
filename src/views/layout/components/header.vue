@@ -14,7 +14,7 @@
                  </div>
                 </a-menu-item>
                 <a-menu-divider />
-                <a-menu-item key="1">
+                <!-- <a-menu-item key="1">
                  <div class="wrap">
                      <span :class="currentLang == item.value?'current':''" v-for="(item,index) in langType" :key="index" @click="toggle(item)">{{item.label}}</span>
                  </div>
@@ -24,7 +24,7 @@
                 <div class="wrap">
                     {{ $t("header_meun.logout") }}
                  </div>
-                </a-menu-item>
+                </a-menu-item> -->
             </a-menu>
             </template>
         </a-dropdown>
@@ -39,15 +39,15 @@ import {reactive, onMounted,toRefs,ref, toRef,getCurrentInstance} from 'vue'
 export default {
     name:'Header',
     setup(props) {
-        const {locale} = useI18n({useScope:'global'})
+        // const {locale} = useI18n({useScope:'global'})
         const {emit} = getCurrentInstance()
         const data = reactive({
-            langType:[
-                {value:'ch',label:'中文'},
-                {value:'en',label:'英文'},
-                {value:'jp',label:'日文'},
-            ],
-            currentLang:'ch',
+            // langType:[
+            //     {value:'ch',label:'中文'},
+            //     {value:'en',label:'英文'},
+            //     {value:'jp',label:'日文'},
+            // ],
+            // currentLang:'ch',
         })
         const headerData = toRefs(data)
 
