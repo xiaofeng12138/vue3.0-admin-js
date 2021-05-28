@@ -1,5 +1,4 @@
 <template>
-
     <a-row type="flex" class="mb-20">
         <a-col flex="auto">
             <a-form :model="formData"  layout="inline">
@@ -58,6 +57,7 @@
 </template>
 
 <script>
+import { UserList } from '@/api/user'
 import UserModal from '@c/modal/index'
 import {reactive, onMounted,toRefs,ref} from 'vue'
 export default {
@@ -66,39 +66,22 @@ export default {
     },
     setup(props) {
     const FormConfig = reactive({
-            dataSource: [
-                    {
-                        key: '1',
-                        id:1,
-                        name: '胡彦斌',
-                        age: 32,
-                        address: '西湖区湖底公园1号',
-                        status:false
-                    },
-                    {
-                        key: '2',
-                        id:2,
-                        name: '胡彦祖',
-                        age: 42,
-                        address: '西湖区湖底公园1号',
-                        status:true
-                    },
-            ],
+            dataSource: [],
             columns: [
                         {
-                            title: '姓名',
-                            dataIndex: 'name',
-                            key: 'name',
+                            title: '手机号',
+                            dataIndex: 'phone',
+                            key: 'phone',
                         },
                         {
-                            title: '年龄',
-                            dataIndex: 'age',
-                            key: 'age',
+                            title: '用户名',
+                            dataIndex: 'username',
+                            key: 'username',
                         },
                         {
-                            title: '住址',
-                            dataIndex: 'address',
-                            key: 'address',
+                            title: '真实姓名',
+                            dataIndex: 'truename',
+                            key: 'truename',
                         },
                         
                         {
@@ -142,13 +125,27 @@ export default {
        FormConfig.showUserModal = true
        
     }
+    const getUserList = ()=>{
+       let requestData ={
+            pageSize:10,
+            pageNumber:1
+        }
+        UserList(requestData).then(res=>{
+            console.log(res)
+            FormConfig.dataSource = res.content.data
+            
+        })
+    }
 
-    onMounted(() => {})
+    onMounted(() => {
+       getUserList()
+    })
     return {
         ...data,
         rowSelection,
         showOpenFn,
-        handEdit
+        handEdit,
+        getUserList
     }
 }
 }

@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { message } from 'ant-design-vue';
+import { GetToken, GetUsername } from "./cookie";
 const service = axios.create({
     //baseURL:'/api',
     baseURL:'',
@@ -8,6 +9,8 @@ const service = axios.create({
 
 //请求拦截
 service.interceptors.request.use(function(config){
+    config.headers['Authorization'] = GetToken();  // 携带token
+    config.headers['Username'] = GetUsername();  // 携带用户名
     return config
 },(error)=>{
     return Promise.reject(error)
