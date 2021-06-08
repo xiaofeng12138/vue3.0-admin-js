@@ -20,8 +20,8 @@
             <a-form-item label="真实姓名" name='truename'>
               <a-input v-model:value="formState.truename" />
             </a-form-item>
-            <a-form-item label="身份证" name='cardId'>
-              <a-input v-model:value="formState.cardId" />
+            <a-form-item label="身份证" name='card_id'>
+              <a-input v-model:value="formState.card_id" />
             </a-form-item>
             <a-form-item label="角色类型" name='role'>
               <a-radio-group :options="roleOptions" v-model:value="formState.role" />
@@ -38,9 +38,10 @@
 <script>
 //引入md5加密
 import md5 from 'js-md5';
-import { CreateUser } from '@/api/user'
+import { CreateUser,UserInfo,UserUpdate } from '@/api/user'
 import {reactive, onMounted,toRefs,ref,watch} from 'vue'
 import { message } from 'ant-design-vue';
+import {requestDataFormat} from '@/utils/formatData.js'
 export default {
     props:{
         showFlag:{
@@ -53,17 +54,17 @@ export default {
         },
     },
     emits:["update:showFlag","update:rowId"],
-    setup(props,{emit}) {
+    setup(props,{emit,parent}) {
         //弹框关闭Flag
         const visible = ref(false)
         
         //异步加载Flag
         const confirmLoading = ref(false)
-        const formState = reactive({
+        let formState = reactive({
             username: '',
             truename: '',
             phone: '',
-            cardId: '',
+            card_id: '',
             role: '',
             password:"",
             status: true,
@@ -82,7 +83,35 @@ export default {
 
         //表单提交函数
         const handleOk = ()=>{
+           props.rowId ? handEdit() : handCreate()
+        }
+
+        //用户编辑
+         const handEdit = ()=>{
+           console.log(333333);
            confirmLoading.value = true
+           //两种对象浅拷贝的方式 
+           let requestData = Object.assign({},formState)
+           if(requestData.password ){
+               requestData.password = md5(requestData.password)
+           }else{
+             delete requestData.password 
+           }
+           console.log(requestData);
+           UserUpdate({...requestData,member_id:props.rowId}).then(res=>{
+                   confirmLoading.value = false
+                   close()
+                   message.success(res.msg)
+                   emit('aaa')
+        
+           }).catch((error)=>{
+               confirmLoading.value = false
+               message.error('接口响应失败 请重试')
+           })
+         }
+        //用户提交
+        const handCreate = ()=>{
+          confirmLoading.value = true
            //两种对象浅拷贝的方式 
            let requestData = Object.assign({},formState)
            requestData.password = md5(requestData.password)
@@ -95,13 +124,14 @@ export default {
                    confirmLoading.value = false
                    close()
                    message.success(res.msg)
-               }
+                   emit('aaa')
+               } 
            }).catch((error)=>{
                confirmLoading.value = false
                message.error('接口响应失败 请重试')
            })
-        }
-
+         }
+     
 
         const resetForm =()=>{
            formRef.value.resetFields()
@@ -110,7 +140,24 @@ export default {
         //单个监听
         watch(()=> props.showFlag,(newValue,oldValue)=>{
              visible.value = newValue
+             if(props.rowId && newValue){
+               getUserInfo()
+             }
         })
+
+        //获取用户详情
+
+        const getUserInfo = ()=>{
+          if(props.rowId){
+            UserInfo({member_id:props.rowId}).then(res=>{
+               requestDataFormat({
+                 data:res.content,
+                 form:formState,
+                 match:['status']
+               })
+            })
+          }
+        }
 
         
 
@@ -144,10 +191,14 @@ export default {
             statuaOptions,
             formRef,
             confirmLoading,
+            handEdit,
+            handCreate,
+
 
 
             resetForm,
-            handleOk
+            handleOk,
+            getUserInfo
         }
     }
 }

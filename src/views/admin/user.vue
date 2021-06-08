@@ -42,24 +42,30 @@
 
 
     <a-table :dataSource="dataSource" :columns="columns" bordered :row-selection="rowSelection">
-        <template #status ="{text}">
-             <a-switch  />
+        <template #status ="{text,record}">
+             <a-switch  :loading = record.loading  :checked="text == 1 ? true : false"  @change="updateStatus(record)" />
+         
         </template>
          <template #operation = "{ record  }">
             <a-button type="primary" @click="handEdit(record)">编辑</a-button>
             <a-button>详情</a-button>
-            <a-button type="danger">删除</a-button>
+            <a-button type="danger" @click="openDelModal(record)">删除</a-button>
         </template>
     </a-table>
 
-    <UserModal v-model:showFlag = "showUserModal"  v-model:rowId="row_id" />
+    <UserModal v-model:showFlag = "showUserModal"  v-model:rowId="row_id" @aaa = getUserList />
+
+    <a-modal v-model:visible="isModalVisible" title="提示" @ok="handleOk()">
+       <p>是否确认删除当前用户</p>
+    </a-modal>
     
 </template>
 
 <script>
-import { UserList } from '@/api/user'
+import { UserList,UserRemove,UserStatus } from '@/api/user'
 import UserModal from '@c/modal/index'
 import {reactive, onMounted,toRefs,ref} from 'vue'
+import { message } from 'ant-design-vue';
 export default {
     components:{
         UserModal
@@ -99,7 +105,10 @@ export default {
               name:""
             },
             showUserModal:false,
-            row_id:''
+            row_id:'',
+            isModalVisible:false,
+            userDelId:'',
+            checked:""
 
     })
 
@@ -115,13 +124,45 @@ export default {
             console.log(selected, selectedRows, changeRows);
         },
     };
+
+    //打开删除用户弹窗
+    const openDelModal = (params)=>{
+      FormConfig.userDelId = params.member_id
+      FormConfig.isModalVisible = true
+    }
+
+    //却认删除用户事件
+    const handleOk = (params)=>{
+       UserRemove({member_id:FormConfig.userDelId}).then(res=>{
+        message.success(res.msg)
+        FormConfig.isModalVisible = false
+        getUserList()
+       })
+    }
+    //取消删除事件
+    const handleCancel = ()=>{
+
+    }
+
+    //改变用户状态函数
+    const updateStatus = (params)=>{
+        params.status =  params.status == 1 ? false : true
+        params.loading = true
+        UserStatus({member_id:params.member_id,status:params.status}).then(res=>{
+           message.success(res.msg)
+           params.loading = false
+        }).catch(
+            params.loading = false
+        )
+    }
+
     const showOpenFn = ()=>{
          FormConfig.showUserModal = true
     }
 
     const handEdit = (params)=>{
         
-       FormConfig.row_id = params.id
+       FormConfig.row_id = params.member_id
        FormConfig.showUserModal = true
        
     }
@@ -131,7 +172,6 @@ export default {
             pageNumber:1
         }
         UserList(requestData).then(res=>{
-            console.log(res)
             FormConfig.dataSource = res.content.data
             
         })
@@ -145,7 +185,9 @@ export default {
         rowSelection,
         showOpenFn,
         handEdit,
-        getUserList
+        getUserList,
+        handleOk,
+        handleCancel,openDelModal,updateStatus
     }
 }
 }
