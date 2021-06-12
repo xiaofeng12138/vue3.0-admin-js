@@ -53,7 +53,7 @@ export default {
             default:''
         },
     },
-    emits:["update:showFlag","update:rowId"],
+    emits:["update:showFlag","update:rowId",'loadData'],
     setup(props,{emit,parent}) {
         //弹框关闭Flag
         const visible = ref(false)
@@ -102,7 +102,7 @@ export default {
                    confirmLoading.value = false
                    close()
                    message.success(res.msg)
-                   emit('aaa')
+                   emit('loadData')
         
            }).catch((error)=>{
                confirmLoading.value = false
@@ -124,7 +124,7 @@ export default {
                    confirmLoading.value = false
                    close()
                    message.success(res.msg)
-                   emit('aaa')
+                   emit('loadData')
                } 
            }).catch((error)=>{
                confirmLoading.value = false
