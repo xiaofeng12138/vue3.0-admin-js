@@ -77,9 +77,9 @@ const routes = [
         },
       },
       {
-        path: "/role3",
-        name: "Role3",
-        component: ()=>import('@/views/admin/role.vue'),
+        path: "/menu",
+        name: "Meun",
+        component: ()=>import('@/views/admin/meun.vue'),
         meta:{
           title:'菜单管理',
           icon:'user'
