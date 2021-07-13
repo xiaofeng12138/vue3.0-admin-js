@@ -9,13 +9,13 @@
         </div>
      <hr />
      <a-tree :tree-data="data.treeData" :defaultExpandAll = true >
-                <template #title = "{key: treeKey, title}">
+                <template #title = "{menu_id, menu_name_cn}">
                         <div class="menu-item">
-                            <span>{{title}}</span>
+                            <span>{{menu_name_cn}}</span>
                             <div class="button-group">
-                                <a-button class= "button-mini" type="primary" @click="operateFn('add_child')">添加子菜单</a-button>
+                                <a-button class= "button-mini" type="primary" @click="operateFn('add_child',menu_id)">添加子菜单</a-button>
                                 <a-button class= "button-mini" @click="operateFn('edit')">编辑</a-button>
-                                <a-button class= "button-mini" type="danger">删除</a-button>
+                                <a-button class= "button-mini" type="danger" @click="delFn(menu_id)">删除</a-button>
                             </div>
                         </div>
                   
@@ -93,49 +93,44 @@
         </div>
     </a-col>
   </a-row>
+
+     <a-modal v-model:visible="data.isModalVisible" title="提示" @ok="handleOk()" @cancel="data.isModalVisible == false ">
+       <p>是否确认删除当前用户</p>
+    </a-modal>
 </template>
 
 <script>
 
-import {reactive, onMounted,toRefs,ref} from 'vue'
-import {CreateMenu} from '@/api/menu.js'
+import {reactive, onMounted,toRefs,ref,onBeforeMount} from 'vue'
+import {CreateMenu,MenuListTree,MenuList,MenuRemove} from '@/api/menu.js'
 import { message } from 'ant-design-vue';
 export default {
 setup(props) {
   const data = reactive({
-      treeData :[{
-        title: '系统设置',
-        key: 'system',
-        children: [
-                {
-                    title: '角色管理',
-                    key: 'role',
-                },
-                {
-                    title: '用户列表',
-                    key: 'user',
-                },
-        ]}],
-
-        menuType:""
+      treeData :[],
+      menuType:"",
+      //父菜单Id
+      meun_Id:0,
+      del_Id:'',
+      isModalVisible:false
   })
 
   const Form_data = reactive({
       form:{
-          menu_name_cn:"",
-          menu_name_en:"",
-          router_path:"",
-          router_name:"",
-          component:"",
+          menu_name_cn:"1",
+          menu_name_en:"2",
+          router_path:"3",
+          router_name:"4",
+          component:"5",
           icon:"",
           sort:"",
-          disabled:"0",
-          keep:"0",
+          disabled:0,
+          keep:0,
           redirect:"",
           lang:"",
-          router_path:"",
+          router_path:"1",
           hidden:"",
-          parent_id:"",
+          hidden:"0"
       },
 
        rules:{
@@ -158,44 +153,93 @@ setup(props) {
     ];
 
     onMounted(() => {})
+    onBeforeMount(() => {
+       queryTreeList()
+      queryNormalList()
+    })
+
+    //查询树状列表函数
+    const queryTreeList = ()=>{
+        MenuListTree().then(res=>{
+                data.treeData = res.content
+          })
+    }
+
+    const queryNormalList =()=>{
+       MenuList().then(res=>{
+              console.log(res);
+              const data = res.content
+              let newTree = formatTree(data,0)
+          })
+    }
+
+    //递归处理方法
+    const formatTree =(data,root)=>{
+      const tree = []
+      data.forEach(item =>{
+        if(item.parent_id === root){
+          const child = formatTree(data,item.menu_id)
+          if(child){
+            item["children"] = child
+          }
+          tree.push(item)
+        }
+      })
+        return tree
+    }
 
     //菜单操作函数
-    const operateFn = (params)=>{
+    const operateFn = (params,menu_id)=>{
+      data.meun_Id = menu_id ? menu_id : 0
       data.menuType = params
       resetForm()
-
     }
 
       //表单提交函数
     const handleSubmit =(values)=>{
-        
-       data.menuType == 'add_parant' 
-       if( data.menuType == 'add_parant' ){
-               let requestData= {...Form_data.form}
-            
-                CreateMenu(requestData).then((res)=>{
-
-                    console.log(res);
-                //   if(res.error_code === 0){
-                //     message.success('登陆成功')
-                //     SetToken({token:res.content.token})
-                //     SetUsername({username:res.content.username})
-                //       push({
-                //       name:'Index'
-                //     })
-                //   }else{
-                //     message.error(res.msg)
-                //   }
-                })
-
-       }
-           
+       let requestData ={}
+       if( data.menuType == 'add_child'){ requestData.parent_id = data.meun_Id}
+        requestData = {...Form_data.form,...requestData}
+         CreateMenu(requestData).then((res)=>{
+          if(res.error_code === 0){
+                message.success('添加成功')
+                resetForm()
+                queryTreeList()
+            }else{
+                message.error(res.msg)
+            }
+          })  
     }
+
+
     const formRef = ref(null)
     //重置表单
     const resetForm = ()=>{
         formRef.value.resetFields();
     }
+
+    //删除函数
+
+    const delFn = (params)=>{
+      data.del_Id = params
+      data.isModalVisible = true
+      
+    }
+
+    //确认删除函数
+    const handleOk = ()=>{
+       MenuRemove({menu_id:data.del_Id}).then(res=>{
+         console.log(res);
+         if(res.error_code === 0){
+           message.success(res.msg)
+           data.isModalVisible = false
+           queryTreeList()
+         }else{
+           message.error('删除失败')
+         }
+       })
+    }
+
 
     return {
         data,
@@ -207,7 +251,8 @@ setup(props) {
         handleSubmit,
         resetForm,
         formRef,
-        operateFn
+        operateFn,
+        queryTreeList,queryNormalList,formatTree,delFn,handleOk
     }
 }
 }
