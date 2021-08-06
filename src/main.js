@@ -14,7 +14,8 @@ import i18n from './language/index'
 import './router/permit'
 //V3 全局注入
 
-
+//引入全局组件
+import delAllModal from '@/utils/global'
 const app = createApp(App)
 
 app.config.globalProperties.$axios = Axios
@@ -25,5 +26,6 @@ app
   .use(router)
   .use(Antd)
   .use(i18n)
+  .use(delAllModal)
   .component('svg-icon',Svgicon)
   .mount("#app");

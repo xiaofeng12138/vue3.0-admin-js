@@ -32,11 +32,32 @@ export function MenuListTree(data){
  }
 
 
-  //菜单删除 
-  export function MenuRemove(data){
+ 
+
+ //查看菜单详情
+ export function MenuDetailed(data){
     return service.request({
          method:'post',
-         url:process.env.VUE_APP_APIURL_USER +'v1/menu/remove',
+         url:process.env.VUE_APP_APIURL_USER +'v1/menu/detailed',
          data
      })
  }
+
+  //修改菜单详情
+  export function MenuUpdate (data){
+    return service.request({
+         method:'post',
+         url:process.env.VUE_APP_APIURL_USER +'v1/menu/update ',
+         data
+     })
+ }
+
+  //修改菜单删除
+  export function MenuRemove (data){
+    return service.request({
+         method:'post',
+         url:process.env.VUE_APP_APIURL_USER +'v1/menu/remove ',
+         data
+     })
+ }
+  

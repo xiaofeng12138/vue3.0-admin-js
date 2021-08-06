@@ -14,8 +14,8 @@
                             <span>{{menu_name_cn}}</span>
                             <div class="button-group">
                                 <a-button class= "button-mini" type="primary" @click="operateFn('add_child',menu_id)">添加子菜单</a-button>
-                                <a-button class= "button-mini" @click="operateFn('edit')">编辑</a-button>
-                                <a-button class= "button-mini" type="danger" @click="delFn(menu_id)">删除</a-button>
+                                <a-button class= "button-mini" @click="operateFn('edit',menu_id)">编辑</a-button>
+                                <a-button class= "button-mini" type="danger" @click="handleOk(menu_id)">删除</a-button>
                             </div>
                         </div>
                   
@@ -29,83 +29,85 @@
         </div>
         <hr />
         <div class="Form-wrap">
-            <a-form
-             ref="formRef" 
-            :label-col="labelCol" 
-            :wrapper-col="wrapperCol"
-            :model="form"
-            :rules="rules"
-            @finish="handleSubmit"
-            >
-            <!-- <a-form-item label="当前菜单" v-model.value="form.menu_name_cn">
-              <a-input  />
-            </a-form-item> -->
-             <a-form-item label="菜单名称（中文）" name = 'menu_name_cn' >
-              <a-input v-model:value="form.menu_name_cn"/>
-            </a-form-item>
-            <a-form-item label="菜单名称（英文）"  name= "menu_name_en">
-              <a-input  v-model:value="form.menu_name_en"/>
-            </a-form-item>
-             <a-form-item label="路由名称" name= "router_name">
-              <a-input  v-model:value="form.router_name"/>
-            </a-form-item>
-             <a-form-item label="Path路径" name= "router_path">
-              <a-input  v-model:value="form.router_path"/>
-            </a-form-item>
-            <a-form-item label="页面组件" name= "component">
-              <a-input  v-model:value="form.component" />
-            </a-form-item>
-            <a-form-item label="图标" >
-              <a-upload
-                    v-model.value:file-list="form.icon"
-                    name="avatar"
-                    list-type="picture-card"
-                    class="avatar-uploader"
-                    :show-upload-list="false"
-                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                >
-                    <img v-if="imageUrl" :src="imageUrl" alt="avatar" />
-                    <div v-else>
-                    <loading-outlined v-if="loading"></loading-outlined>
-                    <plus-outlined v-else></plus-outlined>
-                    <div class="ant-upload-text">Upload</div>
-                    </div>
-                </a-upload>
-            </a-form-item>
-            <a-form-item label="排序" name="sort" >
-             <a-input-number v-model:value="form.sort" id="inputNumber" :min="1" :max="10" />
-            </a-form-item>
-             <a-form-item label="禁启用" name="disabled">
-               <a-radio-group v-model:value="form.disabled"  :options="statuaOptions"  />
-            </a-form-item>
-            <a-form-item label="页面缓存" name="keep">
-               <a-radio-group v-model:value="form.keep" :options="statuaOptions"  />
-            </a-form-item>
-             <a-form-item label="页面重定向" name="redirect" >
-              <a-input v-model.value="form.redirect" />
-            </a-form-item>
-           
-             <a-form-item :wrapper-col="{ span: 14, offset: 8 }" >
-               <a-button type="primary" html-type="submit"  :disabled = "!(data.menuType)">添加菜单</a-button>
-               <a-button @click="resetForm">重置</a-button>
-            </a-form-item>
-      </a-form>
+          <a-spin :spinning="spinning">
+                  <a-form
+                      ref="formRef" 
+                      :label-col="labelCol" 
+                      :wrapper-col="wrapperCol"
+                      :model="form"
+                      :rules="rules"
+                      @finish="handleSubmit"
+                      >
+                      <!-- <a-form-item label="当前菜单" v-model.value="form.menu_name_cn">
+                        <a-input  />
+                      </a-form-item> -->
+                      <a-form-item label="菜单名称（中文）" name = 'menu_name_cn' >
+                        <a-input v-model:value="form.menu_name_cn"/>
+                      </a-form-item>
+                      <a-form-item label="菜单名称（英文）"  name= "menu_name_en">
+                        <a-input  v-model:value="form.menu_name_en"/>
+                      </a-form-item>
+                      <a-form-item label="路由名称" name= "router_name">
+                        <a-input  v-model:value="form.router_name"/>
+                      </a-form-item>
+                      <a-form-item label="Path路径" name= "router_path">
+                        <a-input  v-model:value="form.router_path"/>
+                      </a-form-item>
+                      <a-form-item label="页面组件" name= "component">
+                        <a-input  v-model:value="form.component" />
+                      </a-form-item>
+                      <a-form-item label="图标" >
+                        <a-upload
+                              v-model.value:file-list="form.icon"
+                              name="avatar"
+                              list-type="picture-card"
+                              class="avatar-uploader"
+                              :show-upload-list="false"
+                              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                          >
+                              <img v-if="imageUrl" :src="imageUrl" alt="avatar" />
+                              <div v-else>
+                              <loading-outlined v-if="loading"></loading-outlined>
+                              <plus-outlined v-else></plus-outlined>
+                              <div class="ant-upload-text">Upload</div>
+                              </div>
+                          </a-upload>
+                      </a-form-item>
+                      <a-form-item label="排序" name="sort" >
+                      <a-input-number v-model:value="form.sort" id="inputNumber" :min="1" :max="10" />
+                      </a-form-item>
+                      <a-form-item label="禁启用" name="disabled">
+                        <a-radio-group v-model:value="form.disabled"  :options="statuaOptions"  />
+                      </a-form-item>
+                      <a-form-item label="页面缓存" name="keep">
+                        <a-radio-group v-model:value="form.keep" :options="statuaOptions"  />
+                      </a-form-item>
+                      <a-form-item label="页面重定向" name="redirect" >
+                        <a-input v-model.value="form.redirect" />
+                      </a-form-item>
+                    
+                      <a-form-item :wrapper-col="{ span: 14, offset: 8 }" >
+                        <a-button type="primary" html-type="submit"  :disabled = "!(data.menuType)">
+                          菜单{{ data.menuType == 'edit' ? '修改' : '添加'}}
+                        </a-button>
+                        <a-button @click="resetForm">重置</a-button>
+                      </a-form-item>
+                  </a-form>
+          </a-spin>
         </div>
     </a-col>
   </a-row>
-
-     <a-modal v-model:visible="data.isModalVisible" title="提示" @ok="handleOk()" @cancel="data.isModalVisible == false ">
-       <p>是否确认删除当前用户</p>
-    </a-modal>
 </template>
 
 <script>
 
-import {reactive, onMounted,toRefs,ref,onBeforeMount} from 'vue'
-import {CreateMenu,MenuListTree,MenuList,MenuRemove} from '@/api/menu.js'
+import {reactive, onMounted,toRefs,ref,onBeforeMount,getCurrentInstance } from 'vue'
+import {CreateMenu,MenuListTree,MenuList,MenuRemove,MenuDetailed,MenuUpdate,} from '@/api/menu.js'
 import { message } from 'ant-design-vue';
+import {requestDataFormat} from '@/utils/formatData.js'
 export default {
 setup(props) {
+  const {proxy} = getCurrentInstance()
   const data = reactive({
       treeData :[],
       menuType:"",
@@ -117,18 +119,18 @@ setup(props) {
 
   const Form_data = reactive({
       form:{
-          menu_name_cn:"1",
-          menu_name_en:"2",
-          router_path:"3",
-          router_name:"4",
-          component:"5",
+          menu_name_cn:"",
+          menu_name_en:"",
+          router_path:"",
+          router_name:"",
+          component:"",
           icon:"",
           sort:"",
           disabled:0,
           keep:0,
           redirect:"",
           lang:"",
-          router_path:"1",
+          router_path:"",
           hidden:"",
           hidden:"0"
       },
@@ -139,7 +141,8 @@ setup(props) {
           component: [{  required:true,message:'请输入组件名称',  trigger: 'change' }],
           router_name: [{  required:true,message:'请输入路由名称',  trigger: 'change' }],
           router_path: [{  required:true,message:'请输入Path路径',  trigger: 'change' }],
-        }
+        },
+        spinning:false
   })
 
     const roleOptions = [
@@ -167,7 +170,6 @@ setup(props) {
 
     const queryNormalList =()=>{
        MenuList().then(res=>{
-              console.log(res);
               const data = res.content
               let newTree = formatTree(data,0)
           })
@@ -192,11 +194,17 @@ setup(props) {
     const operateFn = (params,menu_id)=>{
       data.meun_Id = menu_id ? menu_id : 0
       data.menuType = params
+      if(params == 'edit'){
+         getMeunDetailed()
+      }
       resetForm()
     }
 
       //表单提交函数
     const handleSubmit =(values)=>{
+      if(data.menuType == 'edit'){
+        EditFn()
+      }else{
        let requestData ={}
        if( data.menuType == 'add_child'){ requestData.parent_id = data.meun_Id}
         requestData = {...Form_data.form,...requestData}
@@ -208,8 +216,28 @@ setup(props) {
             }else{
                 message.error(res.msg)
             }
+          }) 
+          } 
+    }
+
+
+    //编辑函数
+    const EditFn =()=>{
+       let requestData ={}
+       requestData.menu_id = data.meun_Id
+        requestData = {...Form_data.form,...requestData}
+         MenuUpdate(requestData).then((res)=>{
+          if(res.error_code === 0){
+                message.success('修改成功')
+                resetForm()
+                queryTreeList()
+            }else{
+                message.error(res.msg)
+            }
           })  
     }
+
+  
 
 
     const formRef = ref(null)
@@ -227,9 +255,19 @@ setup(props) {
     }
 
     //确认删除函数
-    const handleOk = ()=>{
-       MenuRemove({menu_id:data.del_Id}).then(res=>{
-         console.log(res);
+    const handleOk = (params)=>{
+       data.del_Id = params
+        proxy.deleteModal({
+          titile:"提示",
+          content:"是否确认删除当前选中菜单",
+          on_ok:delFnClick,
+        })
+      return false
+    }
+
+    //删除事件函数
+    const delFnClick =()=>{
+         MenuRemove({menu_id:data.del_Id}).then(res=>{
          if(res.error_code === 0){
            message.success(res.msg)
            data.isModalVisible = false
@@ -238,6 +276,24 @@ setup(props) {
            message.error('删除失败')
          }
        })
+    }
+
+    //获取菜单详情函数
+
+    const getMeunDetailed =()=>{
+      if( Form_data.spinning){return false}
+      Form_data.spinning = true
+      MenuDetailed({menu_id:data.meun_Id}).then(res=>{
+         Form_data.spinning = false
+        requestDataFormat(
+          {
+            data:res.content,
+            form:Form_data.form
+          }
+        )
+      }).catch(()=>{
+         Form_data.spinning = false
+      })
     }
 
 
@@ -251,8 +307,11 @@ setup(props) {
         handleSubmit,
         resetForm,
         formRef,
+        delFn,
+        delFnClick,
         operateFn,
-        queryTreeList,queryNormalList,formatTree,delFn,handleOk
+        getMeunDetailed,
+        queryTreeList,queryNormalList,formatTree,handleOk
     }
 }
 }

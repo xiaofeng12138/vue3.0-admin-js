@@ -27,7 +27,7 @@ export function requestDataFormat(params){
               const formState = params.form
               for(let key in formState){
                 if(keys.includes(key)){  //匹配响应报文和表单字段
-                  if(params.match.includes(key)){  //匹配是否转换数据的字段
+                  if(params.match && params.match.includes(key)){  //匹配是否转换数据的字段
                        formState[key] = matchKey(key, requestData[key])
                    }else{
                      formState[key] = requestData[key]
